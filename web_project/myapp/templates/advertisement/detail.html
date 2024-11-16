@@ -1,0 +1,206 @@
+{% extends "advertisement/base.html" %}
+{% load static %}
+
+{% block title %}
+Details
+{% endblock %}
+
+{% block content %}
+<br><br><br><br><br>
+<div class="container" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+    <center>
+        <h1 class="product-title">{{ item.title }}</h1>
+        <div class="item">
+            <div class="main-image" data-toggle="modal" data-target="#myModal">
+                <img src="{{ item.image.url }}" alt="Slika proizvoda" class="product-image"> 
+            </div>
+            <div class="basic-informations">
+                <h4>
+                    <a href="{% url 'seller_profile' item.seller.id %}" class="seller-profile-link">
+                        {% if item.seller.profile.profile_picture %}
+                            <img src="{{ item.seller.profile.profile_picture.url }}" alt="Profilna slika" class="seller-profile-icon">
+                        {% else %}
+                            <img src="{% static 'myapp/images/male-profile-picture.jpg' %}" alt="Profilna slika" class="seller-profile-icon">
+                        {% endif %}
+                        {{ item.seller.username }}
+                    </a>
+                    <br>
+                    {{ item.seller.profile.city }} 
+                </h4>
+                <hr>
+                <h3 class="price"><b>Cijena:</b> <br>{{ item.price }} € /<br>{{ kn_price|floatformat:2 }} kn</h3>
+                <hr>
+                <div class="shiping">
+                    <div class="shiping-content">
+                        <img src="{% static 'myapp/images/shiping_van_logo.png' %}" alt="Dostava" class="shiping-icon">
+                        <p class="shiping-text"><b>Mogućnost besplatne dostave na Vašu adresu!</b></p>
+                    </div>
+                </div>
+                
+                <div class="buy-now">
+                    {% if item.quantity == 0  %}
+                        <button type="button" class="btn btn-danger" style="margin-top: 20px;">Proizvod je nedostupan</button>
+                    {% elif user.is_authenticated %}
+                        <button id="checkout-button" class="btn btn-primary" style="margin-top: 20px;">Kupi</button>
+                    {% else %}
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal" style="margin-top: 20px;">Prijavi se za kupnju</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="other-informations">
+            <p class="description"><b>Opis proizvoda:</b> {{ item.description }}</p>
+        </div>
+    </center>
+    <br>
+    <h2 style="text-align: center;">Ovo bi vas moglo zanimati…</h2>
+    <br>
+    <div class="items" id="recommended-products" style="align-self: center; margin-left: 200px;">
+        {% if recommended_products %}
+            {% for product in recommended_products %}
+                <div class="card" style="width: 250px;">
+                    <a style="text-decoration: none;" href="/product/{{ product.id }}">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.title }}">
+                        {% endif %}
+                        <div class="card-content">
+                            <h1>{{ product.title }}</h1>
+                            <h2>{{ product.price }} €</h2>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-products">Nema preporučenih proizvoda.</p>
+        {% endif %}
+    </div>
+
+    <!-- Modal za sliku -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <center>
+                        <img src="{{ item.image.url }}" alt="Slika proizvoda" class="modal-image">
+                    </center>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal za uspješnu transakciju -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center">
+            <div class="modal-body">
+                <div class="checkmark-circle">
+                    <img src="{% static 'myapp/images/check.png' %}" alt="Uspješna transakcija" class="success-icon" style="width: 80px; height: 80px;">
+                </div>
+                <h4 class="modal-title mt-3">Uspješna Transakcija!</h4>
+                <p>Vaša kupnja je uspješno izvršena. Hvala vam!</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" onclick="$('#successModal').modal('hide')">Zatvori</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal za otkazanu transakciju -->
+<div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center">
+            <div class="modal-body">
+                <div class="checkmark-circle">
+                    <img src="{% static 'myapp/images/cancel.png' %}" alt="Otkazana transakcija" class="cancel-icon" style="width: 90px; height: 90px;">
+                </div>
+                <h4 class="modal-title mt-3">Otkazana Transakcija!</h4>
+                <p>Vaša kupnja je otkazana. Ako imate pitanja, obratite se podršci.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="$('#cancelModal').modal('hide')">Zatvori</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal za prijavu -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"> 
+        <div class="modal-content p-3">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Prijavite se da biste mogli kupiti proizvod:</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{% url 'login-form' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Korisničko ime:</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Lozinka:</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">Prijavite se</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stripe JavaScript for handling the checkout -->
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    var stripe = Stripe('{{ stripe_publishable_key }}');
+
+    document.addEventListener("DOMContentLoaded", function () {
+    const checkoutButton = document.getElementById("checkout-button");
+    if (checkoutButton) {
+        checkoutButton.addEventListener("click", function () {
+            fetch("{% url 'create_checkout_session' item.id %}")
+                .then((response) => response.json())
+                .then((sessionId) => {
+                    return stripe.redirectToCheckout({ sessionId: sessionId.id });
+                })
+                .then((result) => {
+                    if (result.error) {
+                        alert(result.error.message);
+                    }
+                });
+        });
+    }
+});
+
+    document.addEventListener("DOMContentLoaded", function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentSuccess = urlParams.get('payment_success');
+    const cancel = urlParams.get('cancel');
+
+    if (paymentSuccess === 'true' && cancel !== 'true') {
+        $('#successModal').modal('show');
+    } else if (cancel === 'true') {
+        $('#cancelModal').modal('show');
+    }
+});
+</script>
+
+<style>
+    @keyframes checkmark {
+        0% {
+            transform: scale(0);
+        }
+        50% {
+            transform: scale(1.2);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+</style>
+{% endblock %}

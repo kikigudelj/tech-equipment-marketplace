@@ -1,0 +1,145 @@
+{% extends "advertisement/base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}
+Edit Product
+{% endblock %}
+
+{% block content %}
+<br><br><br><br>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="product-edit-card shadow-lg">
+                <div class="product-edit-header bg-dark text-white text-center">
+                    <h3>Uredi oglas za: {{ product.title }}</h3>
+                </div>
+                <div class="product-edit-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Naziv proizvoda</label>
+                            {{ form.title|add_class:"form-input shadow-sm" }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Opis proizvoda</label>
+                            {{ form.description|add_class:"form-input shadow-sm" }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="price" class="form-label">Cijena (u EUR)</label>
+                            {{ form.price|add_class:"form-input shadow-sm" }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="category" class="form-label">Kategorija</label>
+                            {{ form.category|add_class:"form-select shadow-sm" }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="brand" class="form-label">Robna marka</label>
+                            {{ form.brand|add_class:"form-input shadow-sm" }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="quantity" class="form-label">Količina</label>
+                            {{ form.quantity|add_class:"form-input shadow-sm" }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Slika proizvoda</label>
+                            {{ form.image|add_class:"form-input shadow-sm" }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Status</label>
+                            {{ form.status|add_class:"form-select shadow-sm" }}
+                        </div>
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn-submit btn-lg shadow">Spremi promjene</button>
+                            <a href="{% url 'product_detail' product.id %}" class="btn-cancel btn-lg shadow">Odustani</a>
+                            <button type="button" class="btn btn-danger btn-lg shadow" data-bs-toggle="modal" data-bs-target="#deleteModal">Obriši proizvod</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br><br>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="padding: 5px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Potvrda brisanja</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Jeste li sigurni da želite obrisati ovaj proizvod? Ova radnja se ne može poništiti.</p>
+            </div>
+            <div class="modal-footer">
+                <form id="deleteProductForm" method="post" action="{% url 'delete_product' product.id %}">
+                    {% csrf_token %}
+                    <button type="button" class="btn btn-secondary btn-lg shadow" data-bs-dismiss="modal">Odustani</button>
+                    <button type="submit" class="btn btn-danger btn-lg shadow" style="margin-bottom: 0px;">Obriši</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .product-edit-card {
+        border-radius: 15px;
+        background-color: #ffffff;
+    }
+
+    .product-edit-header {
+        padding: 7px;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+    }
+
+    .product-edit-body {
+        padding: 20px;
+    }
+
+    .form-input, .form-select {
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .form-input:focus, .form-select:focus {
+        box-shadow: 0 0 10px rgba(0, 255, 0, 0.4);
+        border-color: #28a745;
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+        border: none;
+        color: #ffffff;
+    }
+
+    .btn-submit:hover {
+        background: linear-gradient(135deg, #218838 0%, #1e7e34 100%);
+    }
+
+    .btn-cancel {
+        background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+        border: none;
+        color: #ffffff;
+    }
+
+    .btn-cancel:hover {
+        background: linear-gradient(135deg, #5a6268 0%, #4e555b 100%);
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        border: none;
+        color: #ffffff;
+        margin-bottom: 25px;
+    }
+
+    .btn-danger:hover {
+        background: linear-gradient(135deg, #c82333 0%, #b21f2d 100%);
+    }
+</style>
+
+{% endblock %}

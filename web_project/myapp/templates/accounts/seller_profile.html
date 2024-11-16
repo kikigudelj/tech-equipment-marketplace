@@ -1,0 +1,121 @@
+{% extends "advertisement/base.html" %}
+{% load static %}
+
+{% block title %}
+Profil korisnika
+{% endblock %}
+
+{% block content %}
+<br><br><br><br><br>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="user-profile-card">
+                <div class="user-profile-card-header bg-success text-white">
+                    <h4 class="mb-0">Profil korisnika: {{ profile.user.username }}</h4>
+                </div>
+                <div class="user-profile-card-body text-center">
+                    <div class="profile-picture-wrapper">
+                        {% if profile.profile_picture %}
+                            <img src="{{ profile.profile_picture.url }}" alt="Profilna slika" class="profile-picture">
+                        {% else %}
+                            <img src="{% static 'myapp/images/male-profile-picture.jpg' %}" alt="Profilna slika" class="profile-picture">
+                        {% endif %}
+                    </div>
+                    <h4>{{ profile.name }} {{ profile.surname }}</h4>
+                    <p>{{ profile.city }}</p>
+                    <p><b>Profil kreiran:</b> {{ profile.created_at|date:"d. F Y." }}</p> 
+                    <p><b>Kontakt:</b> <a href="mailto:{{ profile.gmail }}">{{ profile.gmail }}</a></p> 
+                    {% if user.is_authenticated %}
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#messageModal">Pošaljite poruku</button>
+                    {% else %}
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Pošaljite poruku</button>
+                    {% endif %}
+                    <hr>
+                    <h5>Svi objavljeni oglasi:</h5>
+                    {% if products %}
+                        <div class="row">
+                            {% for product in products %}
+                                <div class="col-md-4 mb-4">
+                                    <div class="product-card">
+                                        {% if product.image %}
+                                            <img src="{{ product.image.url }}" class="product-card-img-top" alt="{{ product.title }}">
+                                        {% else %}
+                                            <img src="{% static 'myapp/images/default-product.jpg' %}" class="product-card-img-top" alt="Default Product Image">
+                                        {% endif %}
+                                        <div class="product-card-body">
+                                            <h5 class="product-card-title">{{ product.title }}</h5>
+                                            <p class="product-card-text">{{ product.description|slice:":10" }}{% if product.description|length > 100 %}...{% endif %}</p>
+                                            <p class="product-card-text"><strong>Cijena:</strong> {{ product.price }} €</p>
+                                            <a href="{% url 'product_detail' product.id %}" class="btn btn-primary product-card-btn">Pogledaj detalje</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>Nemate objavljenih proizvoda.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"> 
+        <div class="modal-content p-3">
+            <div class="modal-header">
+                <h5 class="modal-title" id="messageModalLabel">Pošaljite poruku</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{% url 'messenger:send_message_from_profile' user_id %}" id="messageForm">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="messageText" class="form-label">Poruka:</label>
+                        <textarea class="form-control" id="messageText" name="text" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success">Pošaljite</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal za prijavu -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"> 
+        <div class="modal-content p-3">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Prijavite se kako biste poslali poruku</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{% url 'login-form-seller' user_id %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Korisničko ime:</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Lozinka:</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">Prijavite se</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<br><br>
+
+<script>
+    document.getElementById('sendMessageButton').addEventListener('click', function() {
+        var messageModal = new bootstrap.Modal(document.getElementById('messageModal'));
+        messageModal.show();
+    });
+    document.getElementById('messageForm').addEventListener('submit', function() {
+    });
+</script>
+{% endblock %}

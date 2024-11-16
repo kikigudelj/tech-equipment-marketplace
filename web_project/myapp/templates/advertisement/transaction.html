@@ -1,0 +1,103 @@
+<style>
+    body {
+        background-color: #f4f4f4;
+        font-family: 'Arial', sans-serif;
+    }
+    .invoice {
+        max-width: 600px;
+        margin: 30px auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        background-color: #ffffff;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    .invoice-header {
+        text-align: center;
+        border-bottom: 2px solid #009688;
+        padding-bottom: 15px;
+    }
+    .invoice-header h2 {
+        color: #009688;
+        margin: 0;
+    }
+    .invoice-header p {
+        margin: 5px 0;
+        font-weight: bold;
+    }
+    .invoice-details {
+        margin: 20px 0;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 10px;
+    }
+    .invoice-details h3 {
+        margin-bottom: 10px;
+        color: #333;
+        font-size: 18px;
+        text-transform: uppercase;
+    }
+    .invoice-details p {
+        margin: 5px 0;
+        line-height: 1.5;
+    }
+    .total-amount {
+        font-size: 24px;
+        color: #d32f2f;
+        font-weight: bold;
+        margin-top: 20px;
+        text-align: center;
+    }
+    .status {
+        font-size: 18px;
+        margin: 10px 0;
+        font-weight: bold;
+        color: #333;
+    }
+    .footer3 {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 14px;
+        color: #666;
+    }
+</style>
+<br><br><br><br><br>
+<div class="invoice">
+    <div class="invoice-header">
+        <h2>Račun za kupnju</h2>
+        <p>Broj transakcije: <strong>{{ transaction.id }}</strong></p>
+    </div>
+
+    <div class="invoice-details">
+        <h3>Detalji proizvoda</h3>
+        <p><strong>Proizvod:</strong> {{ transaction.product.title }}</p>
+        <p><strong>Cijena:</strong> {{ transaction.amount }} kn</p>
+        <p><strong>Kategorija:</strong> {{ transaction.product.category }}</p>
+    </div>
+
+    <div class="invoice-details">
+        <h3>Podaci o kupcu</h3>
+        <p><strong>Ime kupca:</strong> {{ transaction.buyer.username }}</p>
+        <p><strong>Email:</strong> {{ transaction.buyer.email }}</p>
+    </div>
+
+    <div class="invoice-details">
+        <h3>Podaci o prodavatelju</h3>
+        <p><strong>Ime prodavatelja:</strong> {{ transaction.seller.username }}</p>
+        <p><strong>Email:</strong> {{ transaction.seller.email }}</p>
+    </div>
+
+    <div class="invoice-details">
+        <h3>Status transakcije</h3>
+        <p class="status">Status: {{ transaction.get_status_display }}</p>
+    </div>
+
+    <div class="total-amount">
+        Ukupna cijena: <strong>{{ transaction.amount }} EUR</strong>
+    </div>
+
+    <div class="footer3">
+        <p>Hvala vam na kupnji!</p>
+        <p>&copy; {{ current_year }} OglasArena</p>
+        <a href="{% url 'generate_invoice' transaction.id %}" class="btn btn-primary">Preuzmi račun kao PDF</a>
+    </div>
+</div>

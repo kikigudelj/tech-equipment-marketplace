@@ -1,0 +1,64 @@
+{% extends "advertisement/base.html" %}
+{% load static %}
+
+{% block title %}
+Products
+{% endblock %}
+
+{% block content %}
+<br><br><br><br><br>
+<main class="main-container">
+  <aside class="left-aside">
+    <h3>Filtriraj svoju pretragu:</h3>
+    <form method="get" action=".">
+      <div class="category-search">
+        <p><strong>Kategorije:</strong></p>
+        {% for category in categories %}
+          <div class="form-check">
+            <input class="form-check-input filter-checkbox" type="checkbox" name="category" value="{{ category }}" id="category-{{ category }}" 
+                   {% if category in selected_categories %}checked{% endif %}>
+            <label class="form-check-label" for="category-{{ category }}">
+              {{ category }}
+            </label>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="by-price">
+        <p><strong>Cijena:</strong></p>
+        <div class="price-range">
+          <label for="min-price">Minimalna cijena:</label>
+          <input type="number" id="min-price" name="min_price" min="0" value="{{ min_price }}" placeholder="0">
+          
+          <label for="max-price">Maksimalna cijena:</label>
+          <input type="number" id="max-price" name="max_price" min="0" value="{{ max_price }}" placeholder="10000">
+        </div>
+        <button type="submit">Filtriraj</button>
+      </div>
+    </form>
+  </aside>
+
+  <div class="items" id="filtered-product">
+    {% if products %}
+      {% for product in products %}
+        <div class="card">
+          <a style="text-decoration: none;" href="/product/{{product.id}}">
+            {% if product.image %}
+              <img src="{{ product.image.url }}" alt="{{ product.title }}">
+            {% endif %}
+            <div class="card-content">
+              <h1>{{ product.title }}</h1>
+              <h2>{{ product.price }} €</h2>
+              <p class="quantity">Količina: {{ product.quantity }}</p>
+              <p class="description">{{ product.description }}</p>
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="no-products">Trenutno nema dostupnih proizvoda u ovoj kategoriji.</p>
+    {% endif %}
+  </div>
+</main>
+
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends "advertisement/base.html" %}
+{% load static %}
+
+{% block title %}
+Registracija
+{% endblock %}
+
+{% block content %}
+<br><br><br><br><br>
+<center>
+    <div style="background-color: #1c1e24; padding: 40px; border-radius: 15px; box-shadow: 0 0 30px rgba(50, 205, 50, 0.5); max-width: 400px;">
+        <h1 style="color: #32cd32; font-size: 36px; font-weight: bold;"> REGISTRIRAJ SE:</h1>
+        {% if messages %}
+            {% for message in messages %}
+                <h5 style="color: red; margin-top: 20px;">{{ message }}</h5>
+            {% endfor %}
+        {% endif %}
+        <form method="POST" action="{% url 'register' %}" style="margin-top: 30px;" id="registrationForm">
+            {% csrf_token %}
+            <div style="text-align: left;">
+                <label for="inputUsername" style="color: #32cd32; font-size: 18px;">Korisničko ime:</label>
+                <input type="text" id="inputUsername" name="username" style="width: 100%; padding: 10px; margin-top: 10px; border-radius: 5px; border: none; background-color: #2e3036; color: white;">
+            </div>
+            <br>
+            <div style="text-align: left;">
+                <label for="inputEmail" style="color: #32cd32; font-size: 18px;">Email:</label>
+                <input type="email" id="inputEmail" name="email" style="width: 100%; padding: 10px; margin-top: 10px; border-radius: 5px; border: none; background-color: #2e3036; color: white;">
+            </div>
+            <br>
+            <div style="text-align: left;">
+                <label for="inputPassword" style="color: #32cd32; font-size: 18px;">Lozinka:</label>
+                <input type="password" id="inputPassword" name="password" style="width: 100%; padding: 10px; margin-top: 10px; border-radius: 5px; border: none; background-color: #2e3036; color: white;">
+            </div>
+            <br>
+            <div style="text-align: left;">
+                <label for="inputPasswordConfirm" style="color: #32cd32; font-size: 18px;">Ponovite lozinku:</label>
+                <input type="password" id="inputPasswordConfirm" name="password2" style="width: 100%; padding: 10px; margin-top: 10px; border-radius: 5px; border: none; background-color: #2e3036; color: white;">
+            </div>
+            <br>
+            <div style="text-align: left;">
+                <label for="inputFirstName" style="color: #32cd32; font-size: 18px;">Ime:</label>
+                <input type="text" id="inputFirstName" name="name" style="width: 100%; padding: 10px; margin-top: 10px; border-radius: 5px; border: none; background-color: #2e3036; color: white;">
+            </div>
+            <br>
+            <div style="text-align: left;">
+                <label for="inputLastName" style="color: #32cd32; font-size: 18px;">Prezime:</label>
+                <input type="text" id="inputLastName" name="surname" style="width: 100%; padding: 10px; margin-top: 10px; border-radius: 5px; border: none; background-color: #2e3036; color: white;">
+            </div>
+            <br>
+            <div style="text-align: left;">
+                <label for="inputCity" style="color: #32cd32; font-size: 18px;">Grad:</label>
+                <select id="inputCity" name="city" style="width: 100%; padding: 10px; margin-top: 10px; border-radius: 5px; border: none; background-color: #2e3036; color: white;">
+                    <option value="Zagreb">Zagreb</option>
+                    <option value="Split">Split</option>
+                    <option value="Rijeka">Rijeka</option>
+                    <option value="Osijek">Osijek</option>
+                    <option value="Zadar">Zadar</option>
+                    <option value="Slavonski Brod">Slavonski Brod</option>
+                    <option value="Pula">Pula</option>
+                    <option value="Karlovac">Karlovac</option>
+                    <option value="Sisak">Sisak</option>
+                    <option value="Varaždin">Varaždin</option>
+                    <option value="Šibenik">Šibenik</option>
+                    <option value="Dubrovnik">Dubrovnik</option>
+                    <option value="Vukovar">Vukovar</option>
+                    <option value="Bjelovar">Bjelovar</option>
+                    <option value="Koprivnica">Koprivnica</option>
+                    <option value="Poreč">Poreč</option>
+                    <option value="Vinkovci">Vinkovci</option>
+                    <option value="Samobor">Samobor</option>
+                    <option value="Makarska">Makarska</option>
+                    <option value="Knin">Knin</option>
+                </select>
+            </div>
+            <br>
+            <div style="text-align: left;">
+                <label for="inputAddress" style="color: #32cd32; font-size: 18px;">Adresa stanovanja:</label>
+                <input type="text" id="inputAddress" name="address" style="width: 100%; padding: 10px; margin-top: 10px; border-radius: 5px; border: none; background-color: #2e3036; color: white;">
+            </div>
+            <br>
+            <div style="text-align: left; color: white; font-size: 14px;">
+                <input type="checkbox" id="privacyCheck" style="margin-right: 10px;">
+                Pročitao sam <a href="#" style="color: #32cd32;">Politiku privatnosti *</a>
+            </div>
+            <br>
+            <div style="text-align: left; color: white; font-size: 14px;">
+                <input type="checkbox" id="termsCheck" style="margin-right: 10px;">
+                Potvrđujem da imam više od 18 godina te prihvaćam <a href="#" style="color: #32cd32;">Uvjete i pravila korištenja *</a>
+            </div>
+            <br>
+            <input type="submit" value="REGISTRIRAJ SE" style="background-color: #28a745; color: white; font-size: 18px; padding: 15px 30px; border-radius: 50px; border: none; cursor: pointer;">
+        </form>
+    </div>
+</center>
+<br><br>
+{% endblock %}

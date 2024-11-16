@@ -1,0 +1,131 @@
+{% extends "advertisement/base.html" %}
+{% load static %}
+
+{% block title %}
+Profil korisnika
+{% endblock %}
+
+{% block content %}
+<br><br><br>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="user-profile-card">
+                <div class="user-profile-card-header bg-success text-white">
+                    <h4 class="mb-0">Profil korisnika</h4>
+                </div>
+                <div class="user-profile-card-body">
+                    <div class="text-center mb-4">
+                        <a href="#" class="profile-picture-link" id="triggerUpload" data-bs-toggle="modal" data-bs-target="#changeProfilePictureModal">
+                            {% if profile.profile_picture %}
+                                <img src="{{ profile.profile_picture.url }}" class="rounded-circle user-profile-picture" alt="Profilna slika" id="profilePicture">
+                            {% else %}
+                                <img src="{% static 'myapp/images/male-profile-picture.jpg' %}" class="rounded-circle user-profile-picture" alt="Profilna slika" id="profilePicture">
+                            {% endif %}
+                        </a>
+                    </div>
+                    <table class="table table-borderless">
+                        <tr>
+                            <th>Korisničko ime:</th>
+                            <td>{{ profile.user.username }}</td>
+                            <td class="messenger-link">
+                                <a href="{% url 'messenger:messages_from_conversations' user_id=user.id %}" target="_blank">
+                                    <img src="{% static 'myapp/images/message-icon.png' %}" alt="Messenger" class="messenger-icon">
+                                    <span class="messenger-text">Messenger</span>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Email:</th>
+                            <td>{{ profile.user.email }}</td>
+                        </tr>
+                        <tr>
+                            <th>Ime:</th>
+                            <td>{{ profile.name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Prezime:</th>
+                            <td>{{ profile.surname }}</td>
+                        </tr>
+                        <tr>
+                            <th>Grad:</th>
+                            <td>{{ profile.city }}</td>
+                        </tr>
+                        <tr>
+                            <th>Adresa:</th>
+                            <td>{{ profile.address }}</td>
+                        </tr>
+                    </table>
+
+                    <div class="modal fade" id="changeProfilePictureModal" tabindex="-1" aria-labelledby="changeProfilePictureModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content user-profile-modal-content">
+                                <div class="modal-header user-profile-modal-header">
+                                    <h5 class="modal-title" id="changeProfilePictureModalLabel">Promijeni profilnu sliku</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form method="post" enctype="multipart/form-data" action="{% url 'change_profile_picture' %}">
+                                    {% csrf_token %}
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="profile_picture" class="form-label">Odaberi novu profilnu sliku</label>
+                                            <input type="file" class="form-control" id="profile_picture" name="profile_picture" required>
+                                            {% if form_errors %}
+                                                <div class="alert alert-danger mt-2">
+                                                    <ul>
+                                                        {% for field, errors in form_errors.items %}
+                                                            {% for error in errors %}
+                                                                <li>{{ field }}: {{ error }}</li>
+                                                            {% endfor %}
+                                                        {% endfor %}
+                                                    </ul>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer user-profile-modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zatvori</button>
+                                        <button type="submit" class="btn btn-primary">Spremi promjene</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h4>Proizvodi koje ste objavili:</h4>
+                        {% if products %}
+                            <div class="row">
+                                {% for product in products %}
+                                    <div class="col-md-4 mb-4">
+                                        <div class="user-product-card">
+                                            {% if product.image %}
+                                                <img src="{{ product.image.url }}" class="user-product-card-img-top" alt="{{ product.title }}">
+                                            {% else %}
+                                                <img src="{% static 'myapp/images/default-product.jpg' %}" class="user-product-card-img-top" alt="Default Product Image">
+                                            {% endif %}
+                                            <div class="user-product-card-body">
+                                                <h5 class="card-title">{{ product.title }}</h5>
+                                                <p class="card-text">{{ product.description|slice:":10" }}{% if product.description|length > 100 %}...{% endif %}</p>
+                                                <p class="card-text"><strong>Cijena:</strong> {{ product.price }} €</p>
+                                                <p class="card-text"><strong>Status:</strong> {{ product.status }}</p>
+                                            </div>
+                                            <div class="user-product-card-footer text-center">
+                                                <a href="{% url 'edit_product' product.id %}" class="btn btn-primary user-product-btn-edit">Uredi oglas</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p>Nemate objavljenih proizvoda.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br><br>
+
+{% endblock %}

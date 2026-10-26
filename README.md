@@ -16,7 +16,7 @@ Full-stack web aplikacija za oglašavanje i pretraživanje računalne opreme. Iz
 1. Kloniraj repozitorij:
    `git clone https://github.com/kikigudelj/tech-equipment-marketplace.git`
 2. Uđi u mapu projekta i instaliraj ovisnosti:
-   `pip install django` (ili `pip install -r requirements.txt` ako postoji)
+   `pip install django` 
 3. Pokreni migracije: `python manage.py migrate`
 4. Pokreni server: `python manage.py runserver`
 
